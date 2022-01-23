@@ -8,17 +8,27 @@ const ComponentWrapper = ({ children }) => {
                 return <li>{child}</li>;
             })}
         </ol>
-
-        // <ol>
-        //     {React.Children.map(children, (child) => {
-        //         const config = { ...child.props };
-        //         return <li>{React.cloneElement(child, config)}</li>;
-        //     })}
-        // </ol>
     );
 };
 
+const ComponentWrapper2 = ({ children }) => {
+    const arrayOfChildren = React.Children.toArray(children);
+    console.log(arrayOfChildren);
+    return React.Children.map(arrayOfChildren, (child) => {
+        return React.cloneElement(child, {
+            ...child.props,
+            num: +child.key.replace(".", "") + 1 + ". "
+        });
+    });
+};
+
 ComponentWrapper.propTypes = {
+    children: PropTypes.oneOfType([
+        PropTypes.arrayOf(PropTypes.node),
+        PropTypes.node
+    ])
+};
+ComponentWrapper2.propTypes = {
     children: PropTypes.oneOfType([
         PropTypes.arrayOf(PropTypes.node),
         PropTypes.node
@@ -40,6 +50,11 @@ const ChildrenExercise = () => {
                 <Component />
                 <Component />
             </ComponentWrapper>
+            <ComponentWrapper2>
+                <Component2 />
+                <Component2 />
+                <Component2 />
+            </ComponentWrapper2>
         </CollapseWrapper>
     );
 };
@@ -47,5 +62,10 @@ const ChildrenExercise = () => {
 const Component = () => {
     return <div>Компонент списка</div>;
 };
-
+const Component2 = ({ num }) => {
+    return <div>{num} Компонент списка</div>;
+};
+Component2.propTypes = {
+    num: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+};
 export default ChildrenExercise;
